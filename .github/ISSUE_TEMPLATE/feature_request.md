@@ -1,20 +1,29 @@
----
-name: Feature request
-about: Suggest an idea or a new feature for Sounds
-title: ''
-labels: ''
-assignees: ''
-
----
-
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
-
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
-
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
-
-**Additional context**
-Add any other context or screenshots about the feature request here.
+name: Feature Request
+description: Create a feature request for Mockery
+labels: 'template: story'
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for taking the time to file a feature request! Please fill out this form as completely as possible.
+  - type: textarea
+    attributes:
+      label: Describe the feature/improvement you'd like to request
+      description: A clear and concise description of what you would like and what your use case is.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe the solution you'd like
+      description: A clear and concise description of what you want to happen.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe alternatives you've considered
+      description: A clear and concise description of any alternative solutions or features you've considered.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Any other information about the feature request that hasn't been covered already.
