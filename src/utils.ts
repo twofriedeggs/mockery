@@ -1,6 +1,3 @@
-import Throttle, { RandomDelayThrottle, SetDelayThrottle } from 'src/types/throttle';
-
-
 /**
  * Returns a pseudo random number between "min" and "max" inclusive.
  * Returns zero if called without parameters.
@@ -14,24 +11,22 @@ export function random(min: number = 0, max: number = 0): number {
 
 /**
  * Returns a number that can be:
- * - 0 if the throttle is null
- * - -1 if the throttle is a "timeout"
- * - a random number within a specified range if the throttle is a "random delay"
- * - a number specified by the "set delay" throttle
+ * - 0 if the delay is not set
+ * - -1 if the delay is a "timeout"
+ * - a random number within a specified range if the delay is random
+ * - a set number
  *
- * @param throttle the throttle object retrieved from the configuration.
+ * @param delay the delay object retrieved from the configuration.
  */
-export function throttle(throttle: Throttle | null): number {
-  if (throttle) {
-    const { type } = throttle;
+export function throttle(delay): number {
+  if (delay) {
+    const { type } = delay;
     if (type === 'set-delay') {
-      return (throttle as SetDelayThrottle).value;
+      return delay.value;
     }
 
     if (type === 'random-delay') {
-      const min = (throttle as RandomDelayThrottle).min;
-      const max = (throttle as RandomDelayThrottle).max;
-      return random(min, max);
+      return random(delay.min, delay.max);
     }
 
     if (type === 'timeout') {
@@ -42,27 +37,26 @@ export function throttle(throttle: Throttle | null): number {
   return 0;
 }
 
-export function serialisePath(object) {
-  const o = Object.entries(object).reduce((accumulator, current) => {
+export function serialisePath(query, pathOnly = false) {
+  const path = `/${query.path.join('/')}`;
+
+  if (pathOnly) {
+    return path;
+  }
+
+  const params = Object.entries(query).reduce((accumulator, current) => {
     const [key, value] = current;
 
-    if (key === 'path') {
-      accumulator.path = `/${value.join('/')}`;
-    } else {
-      if (accumulator.params.length === 0) {
-        accumulator.params += `?${key}=${value}`;
+    if (key !== 'path') {
+      if (accumulator.length === 0) {
+        accumulator += `?${key}=${value}`;
       } else {
-        accumulator.params += `&${key}=${value}`;
+        accumulator += `&${key}=${value}`;
       }
     }
 
     return accumulator;
-  }, {
-    path: '',
-    params: ''
-  });
+  }, '');
 
-  if (o.path) return `${o.path}${o.params}`;
-
-  return '';
+  return `${path}${params}`;
 }

@@ -1,25 +1,31 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { pathToRegexp } from 'path-to-regexp';
 import { throttle, serialisePath } from 'src/utils';
 
-function getConfig(path) {
-  // return {
-  //   type: 'fixture',
-  //   status: 200,
-  //   headers: {
-  //     'x-custom-1': 'Custom 1',
-  //     'x-custom-2': 2,
-  //     'Content-Type': 'text/javascript'
-  //   },
-  //   body: '{"key": "value"}',
-  //   delay: null
-  // };
+function getConfig(query) {
+  const path = serialisePath(query, true);
 
-  return {
-    type: 'proxy',
-    protocol: 'https',
-    host: 'api.nasa.gov',
-    delay: null
-  };
+  const configs = [
+    {
+      path: '/nasa-api/planetary/earth/imagery/:id',
+      type: 'fixture',
+      status: 200,
+      headers: {
+        'x-custom-header': 'Custom Header',
+        'Content-Type': 'text/javascript'
+      },
+      body: '{"name": "Nasa Api"}'
+    },
+    {
+      path: '/planetary/apod',
+      type: 'proxy',
+      protocol: 'https',
+      host: 'api.nasa.gov',
+      delay: null
+    }
+  ];
+
+  return configs.find(config => pathToRegexp(config.path).test(path));
 }
 
 async function sendResponse(request, response, config) {
@@ -28,7 +34,7 @@ async function sendResponse(request, response, config) {
   if (type === 'fixture') {
     response.status(config.status);
 
-    const entries = Object.entries(config.headers);
+    const entries = Object.entries(config.headers ?? {});
     for (const [key, value] of entries) {
       response.setHeader(key, value);
     }
@@ -40,7 +46,9 @@ async function sendResponse(request, response, config) {
     const url = `${config.protocol}://${config.host}${serialisePath(request.query)}`;
 
     const headers = request.headers;
-    headers.host = config.host; // override it with the proxy host value
+    // override it with the proxy host value
+    // without an failed request is shown instead
+    headers.host = config.host;
 
     const proxyResponse = await fetch(url, {
       headers
@@ -63,7 +71,7 @@ async function sendResponse(request, response, config) {
 }
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
-  const config = getConfig(request.query.path);
+  const config = getConfig(request.query);
 
   if (config) {
     const delay = throttle(config.delay);
