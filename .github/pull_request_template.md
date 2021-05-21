@@ -1,5 +1,5 @@
 ## Reference
-https://jira.dev.bbc.co.uk/browse/SOUNDS-XXX or https://github.com/bbc/sounds-web-spa/issues/XXX
+https://github.com/twofriedeggs/mockery/issues/XXX
 
 ## Description
 If a bugfix, describe what the problem is and under which conditions.

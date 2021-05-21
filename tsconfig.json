@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "baseUrl": "./src",
+    // https://www.typescriptlang.org/tsconfig#baseUrl
+    "baseUrl": "./",
     "target": "es5",
     "lib": [
       "dom",
