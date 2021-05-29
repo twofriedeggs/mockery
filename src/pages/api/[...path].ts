@@ -1,8 +1,26 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { pathToRegexp } from 'path-to-regexp';
 import { throttle, serialisePath } from 'src/utils';
+import { getMongoDB } from 'src/mongodb';
 
-function getConfig(query) {
+const { MONGODB_DATABASE, MONGODB_COLLECTION } = process.env;
+
+async function getConfig(query) {
+  const mongodb = await getMongoDB();
+
+  const collection = mongodb.db(MONGODB_DATABASE).collection(MONGODB_COLLECTION);
+
+  await collection.insertOne({
+    path: '/nasa-api/planetary/earth/imagery/:id',
+    type: 'fixture',
+    status: 200,
+    headers: {
+      'x-custom-header': 'Custom Header',
+      'Content-Type': 'text/javascript'
+    },
+    body: '{"name": "Nasa Api"}'
+  });
+
   const path = serialisePath(query, true);
 
   const configs = [
@@ -71,7 +89,9 @@ async function sendResponse(request, response, config) {
 }
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
-  const config = getConfig(request.query);
+  const config = await getConfig(request.query);
+
+  console.log(request.query);
 
   if (config) {
     const delay = throttle(config.delay);
