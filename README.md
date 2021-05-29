@@ -15,11 +15,6 @@
   * RESP (REdis Serialization Protocol) see https://redis.io/topics/protocol
 * It supports CORS
 
-## MongoDB
-* http://mongodb.github.io/node-mongodb-native/3.6/api/MongoClient.html
-* http://mongodb.github.io/node-mongodb-native/3.6/api/Db.html
-* http://mongodb.github.io/node-mongodb-native/3.6/api/Collection.html
-
 ## Container
 `docker build -t mockery .`
 
