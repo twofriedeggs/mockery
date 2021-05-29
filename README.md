@@ -14,6 +14,11 @@
   * HTTP/HTTPS
   * RESP (REdis Serialization Protocol) see https://redis.io/topics/protocol
 * It supports CORS
+
+## Container
+`docker build -t mockery .`
+
+`docker run --detach --name mockery --publish 80:8080 mockery`
 ## Configuration
 ```
 {

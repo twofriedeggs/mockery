@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { pathToRegexp } from 'path-to-regexp';
 import { throttle, serialisePath } from 'src/utils';
 
-function getConfig(query) {
+async function getConfig(query) {
   const path = serialisePath(query, true);
 
   const configs = [
@@ -71,7 +71,7 @@ async function sendResponse(request, response, config) {
 }
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
-  const config = getConfig(request.query);
+  const config = await getConfig(request.query);
 
   if (config) {
     const delay = throttle(config.delay);
