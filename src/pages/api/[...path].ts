@@ -2,8 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { pathToRegexp } from 'path-to-regexp';
 import { throttle, serialisePath } from 'src/utils';
 
-const { MONGODB_DATABASE, MONGODB_COLLECTION } = process.env;
-
 async function getConfig(query) {
   const path = serialisePath(query, true);
 
