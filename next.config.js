@@ -4,10 +4,5 @@
 module.exports = {
   compress: true,
   poweredByHeader: false,
-  reactStrictMode: true,
-  webpack: (config) => {
-    config.optimization.minimize = true;
-
-    return config;
-  }
+  reactStrictMode: true
 };

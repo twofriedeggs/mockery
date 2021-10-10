@@ -7,6 +7,20 @@ async function getConfig(query) {
 
   const configs = [
     {
+      path: '/v2/experiments/context',
+      type: 'fixture',
+      status: 200,
+      headers: null,
+      body: '{"name": "Context API"}'
+    },
+    {
+      path: '/v2/experience/inline/listen/sign-in',
+      type: 'fixture',
+      status: 200,
+      headers: null,
+      body: '{"name": "Homepage API"}'
+    },
+    {
       path: '/nasa-api/planetary/earth/imagery/:id',
       type: 'fixture',
       status: 200,
@@ -28,8 +42,16 @@ async function getConfig(query) {
   return configs.find(config => pathToRegexp(config.path).test(path));
 }
 
+function wait(timeout: number) {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  })
+}
+
 async function sendResponse(request, response, config) {
   const { type } = config;
+
+  response.setHeader('Access-Control-Allow-Origin', '*');
 
   if (type === 'fixture') {
     response.status(config.status);
@@ -39,10 +61,8 @@ async function sendResponse(request, response, config) {
       response.setHeader(key, value);
     }
 
-    return response.send(config.body);
-  }
-
-  if (type === 'proxy') {
+    response.send(config.body);
+  } else if (type === 'proxy') {
     const url = `${config.protocol}://${config.host}${serialisePath(request.query)}`;
 
     const headers = request.headers;
@@ -66,18 +86,21 @@ async function sendResponse(request, response, config) {
 
     const content = await proxyResponse.text();
 
-    return response.send(content);
+    response.send(content);
   }
 }
 
 export default async (request: NextApiRequest, response: NextApiResponse) => {
   const config = await getConfig(request.query);
 
+  console.log(request.query);
+
   if (config) {
     const delay = throttle(config.delay);
 
     if (delay >= 0) {
-      setTimeout(sendResponse, delay, request, response, config);
+      await wait(delay);
+      sendResponse(request, response, config);
     }
   } else {
     response.status(404).end();

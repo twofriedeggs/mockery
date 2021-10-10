@@ -4,10 +4,10 @@
   "description": "Mockery - an open source service to mock your upstreams. Used during performance testing, development and QA to dynamically simulate a response and test the app behaviour.",
   "main": "",
   "scripts": {
-    "dev": "next dev -p 8080",
+    "dev": "next dev",
     "prebuild": "rm -rf .next",
     "build": "next build",
-    "start": "next start -p 8080",
+    "start": "next start",
     "browserslist:update-db": "npx browserslist@latest --update-db",
     "browserslist:list": "npx browserslist --config='package.json'"
   },
@@ -27,15 +27,15 @@
   },
   "homepage": "https://github.com/twofriedeggs/mockery#readme",
   "dependencies": {
-    "next": "^10.2.2",
+    "next": "^10.2.3",
     "path-to-regexp": "^6.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@types/node": "^15.6.0",
-    "@types/react": "^17.0.6",
-    "typescript": "^4.2.4"
+    "@types/node": "^15.12.0",
+    "@types/react": "^17.0.9",
+    "typescript": "^4.3.2"
   },
   "browserslist": [
     "last 2 versions",
