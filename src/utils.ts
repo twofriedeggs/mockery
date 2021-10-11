@@ -1,4 +1,11 @@
 /**
+ * Copyright (c) Simone Spaccarotella
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/**
  * Returns a pseudo random number between "min" and "max" inclusive.
  * Returns zero if called without parameters.
  *
