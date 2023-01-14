@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next';
 import { pathToRegexp } from 'path-to-regexp';
 import { throttle, serialisePath } from 'src/utils';
 
@@ -27,8 +27,7 @@ async function getConfig(query) {
       path: '/planetary/apod',
       type: 'proxy',
       protocol: 'https',
-      host: 'api.nasa.gov',
-      delay: null
+      host: 'api.nasa.gov'
     }
   ];
 
@@ -54,7 +53,7 @@ async function sendResponse(request, response, config) {
 
     const headers = request.headers;
     // override it with the proxy host value
-    // without an failed request is shown instead
+    // without it a failed request is shown instead
     headers.host = config.host;
 
     const proxyResponse = await fetch(url, {
@@ -77,16 +76,29 @@ async function sendResponse(request, response, config) {
   }
 }
 
-export default async (request: NextApiRequest, response: NextApiResponse) => {
-  const config = await getConfig(request.query);
 
-  if (config) {
-    const delay = throttle(config.delay);
+const api = async (request: NextApiRequest, response: NextApiResponse) => {
+  try {
+    const config = await getConfig(request.query);
 
-    if (delay >= 0) {
-      setTimeout(sendResponse, delay, request, response, config);
+    if (config) {
+      const delay = throttle(config.delay);
+
+      if (delay >= 0) {
+        setTimeout(sendResponse, delay, request, response, config);
+      }
+    } else {
+      response.status(404).json({
+        error: 'Endpoint Not Found',
+        status: 404
+      })
     }
-  } else {
-    response.status(404).end();
+  } catch (error) {
+    response.status(500).json({
+      error: error.message,
+      status: 500
+    })
   }
 }
+
+export default api;
